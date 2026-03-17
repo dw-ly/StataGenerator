@@ -1,0 +1,9 @@
+﻿appId: ai.codex.stata-generator
+productName: Stata Script Generator
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+win:
+  target:
+    - nsis
