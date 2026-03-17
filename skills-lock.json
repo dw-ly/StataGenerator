@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "implement": {
+      "source": "SimpleEve/development-skills",
+      "sourceType": "github",
+      "computedHash": "0dc92ad24244b4c82b00db9c665df3c95102d4f5bb7f05f6a5289841f36fb3e7"
+    },
+    "plan": {
+      "source": "SimpleEve/development-skills",
+      "sourceType": "github",
+      "computedHash": "ff4a3931e10ad07511dfe42138c53b17d305e0774152508e6b5fa51de30b7a40"
+    },
+    "review": {
+      "source": "SimpleEve/development-skills",
+      "sourceType": "github",
+      "computedHash": "255acf4b3161607afb799852cefe753b2124436da1f8e4b97e2f03bfa3d8395a"
+    },
+    "spec": {
+      "source": "SimpleEve/development-skills",
+      "sourceType": "github",
+      "computedHash": "96207949a14c3fa5f6c1972a416b748b46e27830a2f4bbf85a38d9ffde9f3395"
+    },
+    "test": {
+      "source": "SimpleEve/development-skills",
+      "sourceType": "github",
+      "computedHash": "9a6a40aa65a5ad5feaf86b2cfeffdedc5214100f9f9bf9da1d973a832d0928b2"
+    }
+  }
+}
