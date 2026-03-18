@@ -8,6 +8,8 @@ export const defaultFormValues: FormValues = {
   controlVariables: ["size", "lev"],
   panelId: "firm_id",
   timeVariable: "year",
+  industryVariable: "industry_code",
+  regionVariable: "region_code",
   treatmentVariable: "treat",
   instrumentVariable: "iv_var",
   clusterVariable: "firm_id",

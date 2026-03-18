@@ -1,13 +1,14 @@
-﻿import { dataStructureLabels } from "../../../shared/i18n/labels";
+﻿import { dataStructureLabels, getTemplateSourceLabel } from "../../../shared/i18n/labels";
 import { researchMethods } from "../../../shared/config/research-types";
-import { FormValues } from "../../../shared/types";
+import { FormValues, TemplateDefinition } from "../../../shared/types";
 
 interface CoreSetupSectionProps {
   values: FormValues;
+  templates: TemplateDefinition[];
   onFieldChange: <K extends keyof FormValues>(key: K, value: FormValues[K]) => void;
 }
 
-export function CoreSetupSection({ values, onFieldChange }: CoreSetupSectionProps) {
+export function CoreSetupSection({ values, templates, onFieldChange }: CoreSetupSectionProps) {
   return (
     <div className="form-grid">
       <div className="field">
@@ -29,8 +30,14 @@ export function CoreSetupSection({ values, onFieldChange }: CoreSetupSectionProp
         </select>
       </div>
       <div className="field full-span">
-        <label>当前模板 ID</label>
-        <input value={values.selectedTemplateId} onChange={(event) => onFieldChange("selectedTemplateId", event.target.value)} />
+        <label>当前脚本模板</label>
+        <select value={values.selectedTemplateId} onChange={(event) => onFieldChange("selectedTemplateId", event.target.value)}>
+          {templates.map((template) => (
+            <option key={template.id} value={template.id}>
+              {template.label}（Stata {template.stataVersion} / {getTemplateSourceLabel(template.source)}）
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );

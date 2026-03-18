@@ -12,6 +12,8 @@ type CanonicalKey =
   | "control_variables"
   | "panel_id"
   | "time_variable"
+  | "industry_variable"
+  | "region_variable"
   | "treatment_variable"
   | "instrument_variable"
   | "cluster_variable"
@@ -40,6 +42,8 @@ const keyAliases: Record<CanonicalKey, string[]> = {
   control_variables: ["control_variables", "controls"],
   panel_id: ["panel_id", "entity_id"],
   time_variable: ["time_variable", "time_id"],
+  industry_variable: ["industry_variable", "industry_var"],
+  region_variable: ["region_variable", "region_var"],
   treatment_variable: ["treatment_variable", "treat"],
   instrument_variable: ["instrument_variable", "instrument"],
   cluster_variable: ["cluster_variable", "cluster"],
@@ -168,6 +172,8 @@ export function mapIniToFormValues(parsedIni: ParsedIni, context: MapIniContext 
       controlVariables: splitList(known.control_variables),
       panelId: known.panel_id ?? defaultFormValues.panelId,
       timeVariable: known.time_variable ?? defaultFormValues.timeVariable,
+      industryVariable: known.industry_variable ?? defaultFormValues.industryVariable,
+      regionVariable: known.region_variable ?? defaultFormValues.regionVariable,
       treatmentVariable: known.treatment_variable ?? defaultFormValues.treatmentVariable,
       instrumentVariable: known.instrument_variable ?? defaultFormValues.instrumentVariable,
       clusterVariable: known.cluster_variable ?? defaultFormValues.clusterVariable,
@@ -204,6 +210,8 @@ export function serializeFormValuesToIni(values: FormValues, context: SerializeI
     `control_variables=${encodeIniValue(joinList(values.controlVariables))}`,
     `panel_id=${encodeIniValue(values.panelId)}`,
     `time_variable=${encodeIniValue(values.timeVariable)}`,
+    `industry_variable=${encodeIniValue(values.industryVariable)}`,
+    `region_variable=${encodeIniValue(values.regionVariable)}`,
     `treatment_variable=${encodeIniValue(values.treatmentVariable)}`,
     `instrument_variable=${encodeIniValue(values.instrumentVariable)}`,
     `cluster_variable=${encodeIniValue(values.clusterVariable)}`,

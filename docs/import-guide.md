@@ -19,10 +19,12 @@ core_independent_variable=digital
 control_variables=size,lev,age
 panel_id=firm_id
 time_variable=year
+industry_variable=industry_code
+region_variable=region_code
 treatment_variable=treat
 instrument_variable=shock_index
 cluster_variable=firm_id
-fixed_effects=entity,year
+fixed_effects=entity,year,industry
 
 [output]
 output_targets=summary_table,regression_table
@@ -55,6 +57,8 @@ heterogeneity_notes=Split by ownership type.
 - `control_variables`
 - `panel_id`
 - `time_variable`
+- `industry_variable`
+- `region_variable`
 - `treatment_variable`
 - `instrument_variable`
 - `cluster_variable`
@@ -85,6 +89,8 @@ The importer also accepts a small alias set for backward compatibility:
 - `controls` -> `control_variables`
 - `entity_id` -> `panel_id`
 - `time_id` -> `time_variable`
+- `industry_var` -> `industry_variable`
+- `region_var` -> `region_variable`
 - `treat` -> `treatment_variable`
 - `instrument` -> `instrument_variable`
 - `cluster` -> `cluster_variable`

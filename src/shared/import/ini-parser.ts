@@ -1,7 +1,13 @@
 ﻿import { ParsedIni } from "../types";
 
 function decodeIniValue(value: string) {
-  return value.replace(/\\\\/g, "\\").replace(/\\n/g, "\n").replace(/\\r/g, "\r");
+  const backslashPlaceholder = "\u0000";
+
+  return value
+    .replace(/\\\\/g, backslashPlaceholder)
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\r")
+    .replace(new RegExp(backslashPlaceholder, "g"), "\\");
 }
 
 export function parseIni(content: string): ParsedIni {

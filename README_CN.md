@@ -18,6 +18,7 @@
 - `src/web`：Web 页面入口和前端组件
 - `src/desktop`：桌面前端入口
 - `electron`：Electron 主进程、预加载脚本与 IPC
+- `scripts`：构建与清理辅助脚本
 - `spec/stata-paper-script-generator`：当前需求规格与实施计划
 - `docs`：补充说明文档
 - `fixtures`：示例配置与样例数据
@@ -70,21 +71,31 @@ npm run build:web
 npm run build:electron
 ```
 
+清理旧的桌面打包目录和占用中的桌面进程：
+
+```bash
+npm run clean:desktop
+```
+
 打包 Windows EXE：
 
 ```bash
 npm run build:desktop
 ```
 
+`npm run clean:desktop` 现在由 `scripts/clean-desktop.cjs` 执行，会输出清理日志，自动关闭正在运行的 `Stata Script Generator.exe`，并清理旧的 `release/win-unpacked`、构建配置缓存和旧的便携版 EXE。
+
 桌面打包产物默认输出到 `release/` 目录，不在 `dist/` 目录里。
 
 常见产物位置：
 
-- `release/*.exe`：安装包
+- `release/Stata Script Generator 0.1.0.exe`：便携版 EXE，可直接分发运行
 - `release/win-unpacked/`：解包后的可执行目录
-- `release/win-unpacked/Stata Script Generator.exe`：可直接运行的桌面程序
+- `release/win-unpacked/Stata Script Generator.exe`：目录内主程序
 
-如果你运行了 `npm run build`，那只会生成 Web 和 Electron 的构建文件，不会生成安装包；安装包必须执行 `npm run build:desktop`。
+如果你运行了 `npm run build`，那只会生成 Web 和 Electron 的构建文件，不会生成桌面 EXE；桌面 EXE 必须执行 `npm run build:desktop`。
+
+如果桌面程序出现空白页，请先重新执行一次 `npm run build:desktop`。当前版本已经改为生成相对资源路径，新的打包产物会修复 Electron 通过 `file://` 打开时的资源加载问题。
 
 当前配置已关闭 Windows 可执行文件编辑与签名步骤，用于减少首次打包时对外网下载 `winCodeSign` 的依赖。如果你后续需要正式签名发布，再恢复相关配置即可。
 
@@ -108,10 +119,12 @@ npm run build:desktop
 
 - [spec/stata-paper-script-generator/spec.md](spec/stata-paper-script-generator/spec.md)
 - [spec/stata-paper-script-generator/plan.md](spec/stata-paper-script-generator/plan.md)
+- [spec/stata-paper-script-generator/review.md](spec/stata-paper-script-generator/review.md)
 - [docs/current-outstanding.md](docs/current-outstanding.md)
 
 ## 当前已知事项
 
-- Windows EXE 打包链路仍建议在实际 Windows 环境做一次完整验证
+- 当前 `build:desktop` 产出的是便携版 EXE，不是安装器
+- 首次打包可能仍需要下载 Electron Builder 的 Windows 资源
 - 当前内置模板为 `stata18-modern` 和 `stata17-classic`
 - 如需扩充更多 Stata 版本模板，可继续在模板注册表中追加

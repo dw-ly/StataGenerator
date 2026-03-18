@@ -16,6 +16,14 @@ function createWindow() {
     },
   });
 
+  window.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL) => {
+    console.error("Electron load failed:", { errorCode, errorDescription, validatedURL });
+  });
+
+  window.webContents.on("render-process-gone", (_event, details) => {
+    console.error("Electron renderer crashed:", details);
+  });
+
   const indexPath = path.join(__dirname, "..", "dist", "index.html");
   void window.loadFile(indexPath);
 }

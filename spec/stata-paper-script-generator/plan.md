@@ -60,7 +60,7 @@
 - 共享配置模型模块：研究类型、字段定义、联动规则、校验规则
 - ini 配置导入模块：读取本地 ini 配置并恢复表单
 - Stata 版本模板管理模块：预置模板注册、自定义模板保存、删除与选择
-- 脚本生成引擎模块：根据用户配置和模板生成 .do 文本、说明文本和缺失项提示
+- 脚本生成引擎模块：根据用户配置和模板生成 `.do` 文本、说明文本和缺失项提示
 - 配置持久化模块：保存和恢复最近一次配置
 - Web 展示模块：浏览器表单页、结果页、导入、下载与复制能力
 - Desktop 宿主模块：EXE 启动入口、文件保存能力、桌面构建配置
@@ -70,123 +70,123 @@
 ### 3.1 核心逻辑 / Runtime 模块
 
 - [x] **TODO-S1: 定义首版研究方法与字段配置模型**
-  - **描述**：梳理首版支持的研究方法、数据结构、必填字段、条件字段和默认项，形成统一配置元数据模型
+  - **描述**：梳理首版支持的研究方法、数据结构、必填字段、条件字段、固定效应对应变量和默认项，形成统一配置元数据模型。
   - **涉及模块**：共享配置模型、字段联动规则
-  - **涉及文件**：src/shared/config/research-types.ts、src/shared/config/field-schema.ts、src/shared/types.ts
+  - **涉及文件**：`src/shared/config/research-types.ts`、`src/shared/config/field-schema.ts`、`src/shared/types.ts`
   - **依赖**：无
-  - **验收标准**：可用结构化配置描述“描述统计、基准回归、面板回归、DID、IV”五类方法的表单字段和必填条件
+  - **验收标准**：可用结构化配置描述“描述统计、基准回归、面板回归、DID、IV”五类方法的表单字段、行业/地区变量输入和固定效应对应必填条件。
 
 - [x] **TODO-S2: 实现字段校验与缺失项分析器**
-  - **描述**：根据研究类型和用户输入，输出字段错误、缺失项和可生成状态
+  - **描述**：根据研究类型、固定效应选择和用户输入，输出字段错误、缺失项、方法适配提示和可生成状态。
   - **涉及模块**：校验引擎、规则判断
-  - **涉及文件**：src/shared/validation/form-validator.ts、src/shared/validation/rule-engine.ts
+  - **涉及文件**：`src/shared/validation/form-validator.ts`、`src/shared/validation/rule-engine.ts`
   - **依赖**：TODO-S1
-  - **验收标准**：对首版五类方法可准确提示缺失字段，不因未填关键项生成误导性结果
+  - **验收标准**：对首版五类方法、行业/地区固定效应和“截面数据 + 个体固定效应”场景可准确提示缺失字段或风险，不因未填关键项生成误导性结果。
 
 - [x] **TODO-S3: 实现 ini 配置导入与映射模型**
-  - **描述**：建立 ini 配置解析层，将 ini 中的键值映射为表单字段、模板选择和输出设置
+  - **描述**：建立 ini 配置解析层，将 ini 中的键值映射为表单字段、模板选择、固定效应变量和输出设置。
   - **涉及模块**：ini 解析、字段映射模型
-  - **涉及文件**：src/shared/import/ini-parser.ts、src/shared/import/config-mapping.ts、src/shared/import/types.ts
+  - **涉及文件**：`src/shared/import/ini-parser.ts`、`src/shared/import/config-mapping.ts`、`src/shared/import/types.ts`
   - **依赖**：TODO-S1
-  - **验收标准**：在支持的 ini 结构下，系统可从本地 ini 文件恢复表单配置
+  - **验收标准**：在支持的 ini 结构下，系统可从本地 ini 文件恢复表单配置，并恢复行业变量、地区变量等新增字段。
 
 - [x] **TODO-S4: 实现 Stata 版本模板注册与管理模型**
-  - **描述**：定义预置模板、自定义模板、模板元数据、保存规则和删除规则
+  - **描述**：定义预置模板、自定义模板、模板元数据、保存规则和删除规则。
   - **涉及模块**：模板注册表、模板仓库、模板权限规则
-  - **涉及文件**：src/shared/templates/template-registry.ts、src/shared/templates/template-store.ts、src/shared/templates/template-types.ts
+  - **涉及文件**：`src/shared/templates/template-registry.ts`、`src/shared/templates/template-store.ts`、`src/shared/templates/template-types.ts`
   - **依赖**：TODO-S1
-  - **验收标准**：系统可区分预置模板与用户模板，并仅允许删除用户模板
+  - **验收标准**：系统可区分预置模板与用户模板，并仅允许删除用户模板。
 
 - [x] **TODO-S5: 实现 Stata 脚本模板生成器**
-  - **描述**：根据统一输入模型和所选模板生成脚本正文、说明文本和待补充项提示
+  - **描述**：根据统一输入模型和所选模板生成脚本正文、说明文本和待补充项提示，并在命令中尽量体现真实固定效应变量与标准误设置。
   - **涉及模块**：模板生成引擎、输出格式化器
-  - **涉及文件**：src/shared/generator/stata-generator.ts、src/shared/generator/templates/*.ts、src/shared/generator/output-format.ts
+  - **涉及文件**：`src/shared/generator/stata-generator.ts`、`src/shared/generator/templates/*.ts`、`src/shared/generator/output-format.ts`
   - **依赖**：TODO-S1、TODO-S2、TODO-S4
-  - **验收标准**：输入完整时生成可读的 .do 脚本骨架；输入不完整时返回说明和缺失项而非伪造内容；切换模板后输出可体现对应差异
+  - **验收标准**：输入完整时生成可读的 `.do` 脚本骨架；输入不完整时返回说明和缺失项而非伪造内容；切换模板后输出可体现对应差异。
 
 - [x] **TODO-S6: 定义共享输出与最近配置持久化协议**
-  - **描述**：统一描述脚本结果、说明文本、警告信息、错误信息、导出文件名规则，以及最近一次配置与用户模板的序列化结构
+  - **描述**：统一描述脚本结果、说明文本、警告信息、错误信息、导出文件名规则，以及最近一次配置与用户模板的序列化结构。
   - **涉及模块**：共享 DTO、结果协议、配置序列化
-  - **涉及文件**：src/shared/output/result-schema.ts、src/shared/output/file-naming.ts、src/shared/persistence/recent-config.ts
+  - **涉及文件**：`src/shared/output/result-schema.ts`、`src/shared/output/file-naming.ts`、`src/shared/persistence/recent-config.ts`
   - **依赖**：TODO-S5
-  - **验收标准**：Web 与 Desktop 可在不分叉逻辑的情况下渲染相同输出，并保存和恢复最近一次配置与用户模板索引
+  - **验收标准**：Web 与 Desktop 可在不分叉逻辑的情况下渲染相同输出，并保存和恢复最近一次配置与用户模板索引。
 
 ### 3.2 表现层 / Tooling / 应用模块
 
 - [x] **TODO-C1: 搭建共享前端工程骨架**
-  - **描述**：初始化 TypeScript + React + Vite 项目结构，并划分 shared、web、desktop 三类目录
+  - **描述**：初始化 TypeScript + React + Vite 项目结构，并划分 `shared`、`web`、`desktop` 三类目录。
   - **涉及模块**：前端基础工程、构建配置
-  - **涉及文件**：package.json、	sconfig.json、ite.config.ts、src/shared/*、src/web/*、src/desktop/*
+  - **涉及文件**：`package.json`、`tsconfig.json`、`vite.config.ts`、`src/shared/*`、`src/web/*`、`src/desktop/*`
   - **依赖**：无
-  - **验收标准**：本地可分别启动浏览器开发环境和桌面壳开发环境，且共享模块可被两端引用
+  - **验收标准**：本地可分别启动浏览器开发环境和桌面壳开发环境，且共享模块可被两端引用。
 
 - [x] **TODO-C2: 实现 Web 版配置页面与 ini 导入交互**
-  - **描述**：实现网页版表单界面，支持研究类型切换、字段动态展示、ini 导入、输入校验和生成触发
+  - **描述**：实现网页版表单界面，支持研究类型切换、字段动态展示、固定效应变量输入、ini 导入、输入校验和生成触发。
   - **涉及模块**：Web UI、表单交互、导入交互
-  - **涉及文件**：src/web/pages/GeneratorPage.tsx、src/web/components/FormSections/*.tsx、src/web/components/ImportPanel.tsx、src/web/components/ResultPanel.tsx
+  - **涉及文件**：`src/web/pages/GeneratorPage.tsx`、`src/web/components/FormSections/*.tsx`、`src/web/components/ImportPanel.tsx`、`src/web/components/ResultPanel.tsx`
   - **依赖**：TODO-C1、TODO-S1、TODO-S2、TODO-S3、TODO-S5、TODO-S6
-  - **验收标准**：用户可在浏览器中完成配置、导入 ini 配置并得到脚本、说明和缺失项提示
+  - **验收标准**：用户可在浏览器中完成配置、填写行业/地区变量、导入 ini 配置并得到脚本、说明和缺失项提示。
 
 - [x] **TODO-C3: 实现模板管理与高级功能分区界面**
-  - **描述**：实现模板选择、自定义模板保存/删除，以及将高级功能集中到单独区域的页面结构
+  - **描述**：实现模板选择、自定义模板保存/删除，以及将高级功能集中到单独区域的页面结构。
   - **涉及模块**：模板管理 UI、高级功能区 UI
-  - **涉及文件**：src/web/components/TemplateManager.tsx、src/web/components/AdvancedSection.tsx、src/shared/ui/form-sections.ts
+  - **涉及文件**：`src/web/components/TemplateManager.tsx`、`src/web/components/AdvancedSection.tsx`、`src/shared/ui/form-sections.ts`
   - **依赖**：TODO-C2、TODO-S4
-  - **验收标准**：用户可管理自定义模板，高级功能集中显示，且不通过新手/高手模式切换
+  - **验收标准**：用户可管理自定义模板，高级功能集中显示，且不通过新手/高手模式切换。
 
 - [x] **TODO-C4: 实现 Web 版结果导出与最近配置恢复**
-  - **描述**：支持复制脚本、下载 .do 文件和说明文本，并在浏览器环境保存与恢复最近一次配置和用户模板索引
+  - **描述**：支持复制脚本、下载 `.do` 文件和说明文本，并在浏览器环境保存与恢复最近一次配置和用户模板索引。
   - **涉及模块**：Web 导出、交互反馈、本地存储
-  - **涉及文件**：src/web/utils/download.ts、src/web/persistence/local-storage.ts、src/web/components/ExportActions.tsx
+  - **涉及文件**：`src/web/utils/download.ts`、`src/web/persistence/local-storage.ts`、`src/web/components/ExportActions.tsx`
   - **依赖**：TODO-C3、TODO-S6
-  - **验收标准**：生成结果后可直接复制或下载产物，关闭并重新打开页面后可恢复最近一次配置
+  - **验收标准**：生成结果后可直接复制或下载产物，关闭并重新打开页面后可恢复最近一次配置。
 
 - [x] **TODO-C5: 实现 Desktop EXE 宿主与集成页面**
-  - **描述**：集成 Electron，复用同一套前端界面，在桌面端提供窗口启动、ini 导入和结果保存能力
+  - **描述**：集成 Electron，复用同一套前端界面，在桌面端提供窗口启动、ini 导入和结果保存能力。
   - **涉及模块**：Electron 主进程、桌面桥接层、桌面构建配置
-  - **涉及文件**：electron/main.ts、electron/preload.ts、electron-builder.yml、src/desktop/entry.tsx
+  - **涉及文件**：`electron/main.ts`、`electron/preload.ts`、`electron-builder.yml`、`src/desktop/entry.tsx`
   - **依赖**：TODO-C1、TODO-C3、TODO-S6
-  - **验收标准**：可启动桌面应用并完成配置、导入 ini、生成和保存结果
+  - **验收标准**：可启动桌面应用并完成配置、导入 ini、生成和保存结果。
 
 - [x] **TODO-C6: 实现 Desktop 最近配置与用户模板持久化**
-  - **描述**：补全桌面端最近一次配置保存、用户模板保存删除和用户取消保存时的容错处理
+  - **描述**：补全桌面端最近一次配置保存、用户模板保存删除和用户取消保存时的容错处理。
   - **涉及模块**：桌面文件系统能力、配置持久化、模板持久化
-  - **涉及文件**：electron/ipc/save-file.ts、electron/ipc/recent-config.ts、electron/ipc/template-store.ts、src/desktop/persistence/*.ts
+  - **涉及文件**：`electron/ipc/save-file.ts`、`electron/ipc/recent-config.ts`、`electron/ipc/template-store.ts`、`src/desktop/persistence/*.ts`
   - **依赖**：TODO-C5、TODO-S6
-  - **验收标准**：桌面端重启应用后可恢复最近一次配置，保留用户模板，并支持删除用户模板
+  - **验收标准**：桌面端重启应用后可恢复最近一次配置，保留用户模板，并支持删除用户模板。
 
 - [ ] **TODO-C7: 实现 Windows EXE 打包流程**
-  - **描述**：完成 Windows EXE 构建脚本、产物配置和打包验证
+  - **描述**：完成 Windows EXE 构建脚本、产物配置和打包验证。
   - **涉及模块**：桌面构建脚本
-  - **涉及文件**：package.json scripts、uild/*、electron-builder.yml
+  - **涉及文件**：`package.json` scripts、`build/*`、`electron-builder.yml`
   - **依赖**：TODO-C6
-  - **验收标准**：可生成 Windows EXE 安装包或可执行产物
+  - **验收标准**：可生成 Windows EXE 安装包或可执行产物。
 
 ### 3.3 共享 / 通用模块
 
 - [x] **TODO-G1: 设计页面信息架构与功能分区**
-  - **描述**：定义“基础设定、变量配置、估计方法、稳健性分析、输出选项、模板管理、高级功能、生成结果”页面结构，确保双端 UI 一致
-  - **涉及文件**：docs/ui-ia.md、src/shared/ui/form-sections.ts
+  - **描述**：定义“基础设定、变量配置、估计方法、稳健性分析、输出选项、模板管理、高级功能、生成结果”页面结构，确保双端 UI 一致。
+  - **涉及文件**：`docs/ui-ia.md`、`src/shared/ui/form-sections.ts`
   - **依赖**：无
-  - **验收标准**：表单结构能覆盖 spec 中的输入维度，高级功能被集中到单独区域
+  - **验收标准**：表单结构能覆盖 spec 中的输入维度，高级功能被集中到单独区域。
 
 - [x] **TODO-G2: 编写种子模板与示例配置**
-  - **描述**：为描述统计、基准回归、面板回归、DID、IV 五类首版方法准备样例输入与期望输出，并准备不同 Stata 版本模板样例
-  - **涉及文件**：src/shared/examples/*.ts、ixtures/*.json、ixtures/*.ini
+  - **描述**：为描述统计、基准回归、面板回归、DID、IV 五类首版方法准备样例输入与期望输出，并准备不同 Stata 版本模板样例。
+  - **涉及文件**：`src/shared/examples/*.ts`、`fixtures/*.json`、`fixtures/*.ini`
   - **依赖**：TODO-S5
-  - **验收标准**：开发和测试可直接使用样例验证生成结果是否符合预期
+  - **验收标准**：开发和测试可直接使用样例验证生成结果是否符合预期。
 
 - [x] **TODO-G3: 增加文档与使用说明**
-  - **描述**：补充启动方式、首版方法支持范围、ini 导入说明、模板管理说明、最近配置恢复机制以及 Web 与 Desktop 的差异说明
-  - **涉及文件**：README.md、docs/method-support.md、docs/import-guide.md、docs/template-guide.md
+  - **描述**：补充启动方式、首版方法支持范围、ini 导入说明、模板管理说明、最近配置恢复机制以及 Web 与 Desktop 的差异说明。
+  - **涉及文件**：`README.md`、`docs/method-support.md`、`docs/import-guide.md`、`docs/template-guide.md`
   - **依赖**：TODO-C4、TODO-C7
-  - **验收标准**：开发者和使用者都能根据文档启动系统并理解首版边界
+  - **验收标准**：开发者和使用者都能根据文档启动系统并理解首版边界。
 
 - [x] **TODO-G4: 增加中文界面与中文内容支持**
-  - **描述**：统一梳理界面文案、字段标签、导入导出反馈、模板管理提示、错误提示和生成说明的中文呈现，并补充中文内容在导入、导出、保存和恢复流程中的编码兼容要求
-  - **涉及文件**：src/shared/i18n/*、src/web/components/*、src/web/pages/*、src/desktop/*、electron/*、docs/*
+  - **描述**：统一梳理界面文案、字段标签、导入导出反馈、模板管理提示、错误提示和生成说明的中文呈现，并补充中文内容在导入、导出、保存和恢复流程中的编码兼容要求。
+  - **涉及文件**：`src/shared/i18n/*`、`src/web/components/*`、`src/web/pages/*`、`src/desktop/*`、`electron/*`、`docs/*`
   - **依赖**：TODO-C2、TODO-C3、TODO-C4、TODO-C5、TODO-S6
-  - **验收标准**：Web 与 Desktop 首版默认展示中文界面；用户导入包含中文字段说明的 ini 配置、导出当前配置、保存脚本和说明时不出现乱码；错误提示、模板管理提示和生成结果说明均为中文
+  - **验收标准**：Web 与 Desktop 首版默认展示中文界面；用户导入包含中文字段说明的 ini 配置、导出当前配置、保存脚本和说明时不出现乱码；错误提示、模板管理提示和生成结果说明均为中文。
 
 ## 4. 依赖关系与执行顺序
 
@@ -211,7 +211,7 @@
 
 ASCII 关系图：
 
-`	ext
+```text
 TODO-G1 ----> TODO-S1 ----> TODO-S2 -----------\
     |              |                            \
     |              +----> TODO-S3               +----> TODO-S5 ----> TODO-S6
@@ -236,14 +236,14 @@ TODO-C5 ---------------------------------------------------------------> TODO-G4
 ### 5.1 单元测试标准
 
 - TODO-S1：验证五类首版研究方法的字段定义、必填项和联动规则是否正确注册
-- TODO-S2：验证面板回归、DID、IV 等场景的缺失项提示是否正确
-- TODO-S3：验证 ini 解析与字段映射是否可恢复有效配置
+- TODO-S2：验证面板回归、DID、IV、行业/地区固定效应和截面数据个体固定效应提示是否正确
+- TODO-S3：验证 ini 解析与字段映射是否可恢复有效配置及新增固定效应变量字段
 - TODO-S4：验证预置模板与用户模板的注册、保存、删除规则
 - TODO-S5：验证完整输入能按不同模板生成对应脚本骨架，不完整输入不会生成伪造变量
 - TODO-S6：验证输出结构可被双端稳定消费，且最近一次配置与模板索引可正确序列化与恢复
-- TODO-C2：验证表单切换、ini 导入、校验提示和生成结果联动
+- TODO-C2：验证表单切换、固定效应变量动态展示、ini 导入、校验提示和生成结果联动
 - TODO-C3：验证模板管理和高级功能分区界面行为
-- TODO-C4：验证复制、下载 .do 文件、说明文本以及浏览器最近配置恢复行为
+- TODO-C4：验证复制、下载 `.do` 文件、说明文本以及浏览器最近配置恢复行为
 - TODO-C5：验证桌面端桥接调用、ini 导入、生成和结果展示
 - TODO-C6：验证桌面端最近配置恢复、用户模板保存删除和本地保存接口
 - TODO-C7：验证 Windows EXE 打包脚本配置
@@ -265,35 +265,42 @@ TODO-C5 ---------------------------------------------------------------> TODO-G4
 - 期望结果：页面自动填充相关字段，并允许用户继续编辑
 - 异常场景：ini 结构不合法时，页面给出明确错误提示且不影响手工填写
 
-场景三：模板管理
+场景三：行业/地区固定效应变量输入
+
+- 前置条件：用户在基准回归、DID 或 IV 场景中勾选行业固定效应或地区固定效应
+- 操作步骤：填写真实行业变量名和地区变量名后生成脚本
+- 期望结果：生成脚本使用真实变量名，而不是固定占位文本
+- 异常场景：缺少行业变量名或地区变量名时，系统提示缺失字段并阻止生成误导性脚本
+
+场景四：模板管理
 
 - 前置条件：系统已加载预置模板
 - 操作步骤：用户查看模板列表，保存一个自定义模板，再删除该模板
 - 期望结果：预置模板可选不可删，自定义模板可保存可删除
 - 异常场景：尝试删除预置模板时，系统阻止操作并提示原因
 
-场景四：桌面版生成并保存脚本
+场景五：桌面版生成并保存脚本
 
 - 前置条件：桌面应用可启动
 - 操作步骤：在 EXE 中完成配置，点击生成，再点击保存
-- 期望结果：本地生成 .do 文件和说明文件
+- 期望结果：本地生成 `.do` 文件和说明文件
 - 异常场景：用户取消保存时，应用不崩溃且保留当前结果
 
-场景五：最近一次配置恢复
+场景六：最近一次配置恢复
 
 - 前置条件：用户已在 Web 或 Desktop 端完成一次有效配置
 - 操作步骤：关闭页面或应用后重新打开
 - 期望结果：系统自动恢复最近一次配置
 - 异常场景：配置数据损坏时，系统回退到默认空白配置并提示恢复失败
 
-场景六：双端结果一致性验证
+场景七：双端结果一致性验证
 
 - 前置条件：准备同一份示例输入和同一模板选择
 - 操作步骤：分别在 Web 与 Desktop 输入相同配置并生成
 - 期望结果：两端脚本正文、说明文本和缺失项分析结果一致
 - 异常场景：如果两端结果不一致，必须可追溯到宿主差异而非共享生成器逻辑分叉
 
-场景七：中文界面与中文内容验证
+场景八：中文界面与中文内容验证
 
 - 前置条件：系统已完成中文文案接入，准备包含中文备注或说明的配置
 - 操作步骤：在 Web 与 Desktop 中分别查看表单、导入 ini、导出当前配置并保存生成结果
@@ -315,5 +322,3 @@ TODO-C5 ---------------------------------------------------------------> TODO-G4
 ## 7. 开放问题
 
 - 需要预置哪些 Stata 版本模板？
-
-

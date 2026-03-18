@@ -10,4 +10,4 @@ win:
   signAndEditExecutable: false
   verifyUpdateCodeSignature: false
   target:
-    - nsis
+    - portable

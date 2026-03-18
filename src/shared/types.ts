@@ -31,6 +31,8 @@ export interface FormValues {
   controlVariables: string[];
   panelId: string;
   timeVariable: string;
+  industryVariable: string;
+  regionVariable: string;
   treatmentVariable: string;
   instrumentVariable: string;
   clusterVariable: string;

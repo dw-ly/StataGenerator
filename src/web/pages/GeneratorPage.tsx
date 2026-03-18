@@ -53,7 +53,11 @@ export function GeneratorPage({ host }: GeneratorPageProps) {
       }
 
       if (recentConfig) {
-        setValues(recentConfig);
+        const restoredTemplateIds = [...builtinTemplates, ...(recentTemplates ?? [])].map((template) => template.id);
+        const restoredValues = restoredTemplateIds.includes(recentConfig.selectedTemplateId)
+          ? recentConfig
+          : { ...recentConfig, selectedTemplateId: builtinTemplates[0].id };
+        setValues(restoredValues);
       }
 
       setHydrated(true);
@@ -108,7 +112,7 @@ export function GeneratorPage({ host }: GeneratorPageProps) {
 
   function handleSaveTemplate(name: string) {
     const template = createUserTemplate(selectedTemplate, name);
-    setUserTemplates((current) => [...current.filter((item) => item.id !== template.id), template]);
+    setUserTemplates((current) => [...current, template]);
     updateField("selectedTemplateId", template.id);
   }
 
@@ -135,7 +139,7 @@ export function GeneratorPage({ host }: GeneratorPageProps) {
       <div className="grid-layout">
         <div className="column-stack">
           <SectionCard title="基础设定" description="选择研究方法、数据结构和脚本模板基线。">
-            <CoreSetupSection values={values} onFieldChange={updateField} />
+            <CoreSetupSection values={values} templates={templates} onFieldChange={updateField} />
           </SectionCard>
           <SectionCard title="变量配置" description="填写脚本生成所需的变量名和核心字段。">
             <VariablesSection values={values} onFieldChange={updateField} />
