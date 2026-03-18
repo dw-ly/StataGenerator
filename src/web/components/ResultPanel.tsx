@@ -9,7 +9,7 @@ export function ResultPanel({ result }: ResultPanelProps) {
     <div className="column-stack">
       {result.missing.length > 0 ? (
         <div>
-          <h3>Missing fields</h3>
+          <h3>缺失字段</h3>
           <ul className="alert-list">
             {result.missing.map((item) => (
               <li key={item}>{item}</li>
@@ -19,7 +19,7 @@ export function ResultPanel({ result }: ResultPanelProps) {
       ) : null}
       {result.warnings.length > 0 ? (
         <div>
-          <h3>Warnings</h3>
+          <h3>提示</h3>
           <ul className="info-list">
             {result.warnings.map((item) => (
               <li key={item}>{item}</li>
@@ -28,7 +28,7 @@ export function ResultPanel({ result }: ResultPanelProps) {
         </div>
       ) : null}
       <div>
-        <h3>Notes</h3>
+        <h3>说明</h3>
         <ul className="info-list">
           {result.explanation.map((item) => (
             <li key={item}>{item}</li>
@@ -36,7 +36,7 @@ export function ResultPanel({ result }: ResultPanelProps) {
         </ul>
       </div>
       <div className="result-box">
-        <pre>{result.script || "Generate a script to see output here."}</pre>
+        <pre>{result.script || "点击“生成脚本”后，这里会显示当前结果。"}</pre>
       </div>
     </div>
   );

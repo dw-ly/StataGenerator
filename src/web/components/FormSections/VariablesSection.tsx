@@ -9,38 +9,38 @@ export function VariablesSection({ values, onFieldChange }: VariablesSectionProp
   return (
     <div className="form-grid">
       <div className="field">
-        <label>Dependent variable</label>
+        <label>因变量</label>
         <input value={values.dependentVariable} onChange={(event) => onFieldChange("dependentVariable", event.target.value)} />
       </div>
       <div className="field">
-        <label>Core independent variable</label>
+        <label>核心自变量</label>
         <input value={values.coreIndependentVariable} onChange={(event) => onFieldChange("coreIndependentVariable", event.target.value)} />
       </div>
       <div className="field full-span">
-        <label>Control variables (comma separated)</label>
+        <label>控制变量（逗号分隔）</label>
         <input
           value={values.controlVariables.join(", ")}
           onChange={(event) => onFieldChange("controlVariables", event.target.value.split(",").map((item) => item.trim()).filter(Boolean))}
         />
       </div>
       <div className="field">
-        <label>Panel id</label>
+        <label>面板 ID 变量</label>
         <input value={values.panelId} onChange={(event) => onFieldChange("panelId", event.target.value)} />
       </div>
       <div className="field">
-        <label>Time variable</label>
+        <label>时间变量</label>
         <input value={values.timeVariable} onChange={(event) => onFieldChange("timeVariable", event.target.value)} />
       </div>
       <div className="field">
-        <label>Treatment variable</label>
+        <label>处理变量</label>
         <input value={values.treatmentVariable} onChange={(event) => onFieldChange("treatmentVariable", event.target.value)} />
       </div>
       <div className="field">
-        <label>Instrument variable</label>
+        <label>工具变量</label>
         <input value={values.instrumentVariable} onChange={(event) => onFieldChange("instrumentVariable", event.target.value)} />
       </div>
       <div className="field full-span">
-        <label>Cluster variable</label>
+        <label>聚类变量</label>
         <input value={values.clusterVariable} onChange={(event) => onFieldChange("clusterVariable", event.target.value)} />
       </div>
     </div>

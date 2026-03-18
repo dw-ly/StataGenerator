@@ -1,4 +1,5 @@
 ﻿import { defaultFormValues } from "../config/defaults";
+import { getDataStructureLabel, getMethodLabel } from "../i18n/labels";
 import { FormValues, IniImportReport, IniImportResult, ParsedIni } from "../types";
 
 type CanonicalKey =
@@ -23,6 +24,10 @@ type CanonicalKey =
 
 interface MapIniContext {
   validTemplateIds?: string[];
+}
+
+interface SerializeIniContext {
+  configName?: string;
 }
 
 const keyAliases: Record<CanonicalKey, string[]> = {
@@ -64,8 +69,16 @@ function splitList(value: string | undefined) {
     .filter(Boolean);
 }
 
+function joinList(values: string[]) {
+  return values.filter(Boolean).join(",");
+}
+
 function dedupe(items: string[]) {
   return [...new Set(items)];
+}
+
+function encodeIniValue(value: string) {
+  return value.replace(/\\/g, "\\\\").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
 }
 
 function coerceMethod(value: string | undefined, warnings: string[]) {
@@ -78,7 +91,7 @@ function coerceMethod(value: string | undefined, warnings: string[]) {
     return normalized;
   }
 
-  warnings.push(`Unsupported method "${value}" in ini; fallback to "${defaultFormValues.method}".`);
+  warnings.push(`ini 中的 method=\"${value}\" 暂不支持，已回退为“${getMethodLabel(defaultFormValues.method)}”。`);
   return defaultFormValues.method;
 }
 
@@ -92,7 +105,7 @@ function coerceDataStructure(value: string | undefined, warnings: string[]) {
     return normalized;
   }
 
-  warnings.push(`Unsupported data structure "${value}" in ini; fallback to "${defaultFormValues.dataStructure}".`);
+  warnings.push(`ini 中的 data_structure=\"${value}\" 暂不支持，已回退为“${getDataStructureLabel(defaultFormValues.dataStructure)}”。`);
   return defaultFormValues.dataStructure;
 }
 
@@ -133,13 +146,13 @@ export function mapIniToFormValues(parsedIni: ParsedIni, context: MapIniContext 
       : defaultFormValues.selectedTemplateId;
 
   if (!known.config_version) {
-    report.warnings.push("Missing meta.config_version; expected ini format version 1.");
+    report.warnings.push("ini 中缺少 meta.config_version，当前首版要求版本 1。");
   } else if (known.config_version !== "1") {
-    report.warnings.push(`Unsupported config_version "${known.config_version}". Version 1 is expected.`);
+    report.warnings.push(`检测到不支持的 config_version=\"${known.config_version}\"，当前仅支持版本 1。`);
   }
 
   if (selectedTemplateId !== resolvedTemplateId) {
-    report.warnings.push(`Template "${selectedTemplateId}" is not available in the current app; fallback to "${resolvedTemplateId}".`);
+    report.warnings.push(`当前应用未提供模板“${selectedTemplateId}”，已回退为“${resolvedTemplateId}”。`);
   }
 
   report.configVersion = known.config_version ?? null;
@@ -172,4 +185,42 @@ export function mapIniToFormValues(parsedIni: ParsedIni, context: MapIniContext 
       warnings: dedupe(report.warnings),
     },
   };
+}
+
+export function serializeFormValuesToIni(values: FormValues, context: SerializeIniContext = {}) {
+  const configName = context.configName ?? `${values.method}-config`;
+  const lines = [
+    "[meta]",
+    "config_version=1",
+    `config_name=${encodeIniValue(configName)}`,
+    "",
+    "[research]",
+    `method=${encodeIniValue(values.method)}`,
+    `data_structure=${encodeIniValue(values.dataStructure)}`,
+    "",
+    "[variables]",
+    `dependent_variable=${encodeIniValue(values.dependentVariable)}`,
+    `core_independent_variable=${encodeIniValue(values.coreIndependentVariable)}`,
+    `control_variables=${encodeIniValue(joinList(values.controlVariables))}`,
+    `panel_id=${encodeIniValue(values.panelId)}`,
+    `time_variable=${encodeIniValue(values.timeVariable)}`,
+    `treatment_variable=${encodeIniValue(values.treatmentVariable)}`,
+    `instrument_variable=${encodeIniValue(values.instrumentVariable)}`,
+    `cluster_variable=${encodeIniValue(values.clusterVariable)}`,
+    `fixed_effects=${encodeIniValue(joinList(values.fixedEffects))}`,
+    "",
+    "[output]",
+    `output_targets=${encodeIniValue(joinList(values.outputTargets))}`,
+    "",
+    "[template]",
+    `selected_template_id=${encodeIniValue(values.selectedTemplateId)}`,
+    "",
+    "[advanced]",
+    `notes=${encodeIniValue(values.notes)}`,
+    `robustness_notes=${encodeIniValue(values.robustnessNotes)}`,
+    `heterogeneity_notes=${encodeIniValue(values.heterogeneityNotes)}`,
+    "",
+  ];
+
+  return lines.join("\n");
 }

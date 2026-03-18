@@ -9,32 +9,32 @@ export function validateForm(values: FormValues): ValidationResult {
   const warnings: string[] = [];
 
   if (isBlank(values.dependentVariable)) {
-    missing.push("Dependent variable is required.");
+    missing.push("请填写因变量。");
   }
 
   if (values.method !== "descriptive" && isBlank(values.coreIndependentVariable)) {
-    missing.push("Core independent variable is required for the selected method.");
+    missing.push("当前研究方法需要填写核心自变量。");
   }
 
   if (values.method === "panel") {
     if (isBlank(values.panelId)) {
-      missing.push("Panel id is required for panel regression.");
+      missing.push("面板回归需要填写面板 ID 变量。");
     }
     if (isBlank(values.timeVariable)) {
-      missing.push("Time variable is required for panel regression.");
+      missing.push("面板回归需要填写时间变量。");
     }
   }
 
   if (values.method === "did" && isBlank(values.treatmentVariable)) {
-    missing.push("Treatment variable is required for DID.");
+    missing.push("双重差分需要填写处理变量。");
   }
 
   if (values.method === "iv" && isBlank(values.instrumentVariable)) {
-    missing.push("Instrument variable is required for IV.");
+    missing.push("工具变量回归需要填写工具变量。");
   }
 
   if (values.clusterVariable.trim().length > 0 && !values.fixedEffects.includes("clustered")) {
-    warnings.push("Cluster variable is filled in, but clustered standard errors are not marked in fixed effects or notes.");
+    warnings.push("已填写聚类变量，但尚未勾选“聚类标准误”。");
   }
 
   return {

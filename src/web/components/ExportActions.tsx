@@ -29,24 +29,31 @@ export function ExportActions({ script, explanation }: ExportActionsProps) {
     downloadTextFile(defaultFileName, script);
   }
 
-  function saveExplanation() {
+  async function saveExplanation() {
     if (explanation.length === 0) {
       return;
     }
 
-    downloadTextFile(buildOutputFileName("stata-script-notes", "txt"), explanation.join("\n"));
+    const content = explanation.join("\n");
+    const defaultFileName = buildOutputFileName("stata-script-notes", "txt");
+    if (window.desktopApi) {
+      await window.desktopApi.saveTextFile({ defaultFileName, content });
+      return;
+    }
+
+    downloadTextFile(defaultFileName, content);
   }
 
   return (
     <div className="toolbar">
       <button type="button" className="button-primary" onClick={copyScript}>
-        Copy script
+        复制脚本
       </button>
       <button type="button" className="button-secondary" onClick={saveScript}>
-        Download .do
+        导出 .do 文件
       </button>
       <button type="button" className="button-secondary" onClick={saveExplanation}>
-        Download notes
+        导出说明
       </button>
     </div>
   );

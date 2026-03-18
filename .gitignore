@@ -2,3 +2,4 @@
 dist/
 dist-electron/
 *.log
+release/

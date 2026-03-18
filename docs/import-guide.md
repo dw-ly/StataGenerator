@@ -98,3 +98,9 @@ The importer also accepts a small alias set for backward compatibility:
 - Missing `config_version` generates a warning.
 - Unsupported method or data structure values fall back to defaults.
 - Unknown template ids fall back to the default built-in template.
+
+## Export behavior
+
+- The current form state can be exported back to a versioned ini file.
+- Export uses the same section layout as the supported import format.
+- Line breaks in text fields are escaped as `\\n` so the exported file can round-trip back into the importer.

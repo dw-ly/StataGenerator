@@ -1,4 +1,5 @@
-﻿import { GenerateResult, FormValues, TemplateDefinition } from "../types";
+﻿import { getLabelList, getMethodLabel, outputTargetLabels } from "../i18n/labels";
+import { GenerateResult, FormValues, TemplateDefinition } from "../types";
 import { validateForm } from "../validation/form-validator";
 import { buildScript } from "./templates/default-script";
 
@@ -8,7 +9,7 @@ export function generateStataScript(values: FormValues, template: TemplateDefini
   if (!validation.canGenerate) {
     return {
       script: "",
-      explanation: ["Complete the missing fields before generating a script."],
+      explanation: ["请先补全缺失字段，再生成脚本。"],
       missing: validation.missing,
       warnings: validation.warnings,
     };
@@ -17,9 +18,9 @@ export function generateStataScript(values: FormValues, template: TemplateDefini
   return {
     script: buildScript(values, template),
     explanation: [
-      `Method: ${values.method}`,
-      `Template: ${template.label}`,
-      `Outputs: ${values.outputTargets.join(", ") || "none"}`,
+      `研究方法：${getMethodLabel(values.method)}`,
+      `脚本模板：${template.label}`,
+      `输出内容：${getLabelList(values.outputTargets, outputTargetLabels)}`,
     ],
     missing: [],
     warnings: validation.warnings,

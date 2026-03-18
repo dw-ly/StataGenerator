@@ -1,14 +1,15 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import { defaultFormValues } from "../../shared/config/defaults";
-import { mapIniToFormValues } from "../../shared/import/config-mapping";
-import { parseIni } from "../../shared/import/ini-parser";
 import { generateStataScript } from "../../shared/generator/stata-generator";
+import { getHostLabel, getMethodLabel } from "../../shared/i18n/labels";
+import { mapIniToFormValues, serializeFormValuesToIni } from "../../shared/import/config-mapping";
+import { parseIni } from "../../shared/import/ini-parser";
+import { buildOutputFileName } from "../../shared/output/file-naming";
 import { ResultSchema } from "../../shared/output/result-schema";
 import { deserializeRecentConfig, serializeRecentConfig } from "../../shared/persistence/recent-config";
 import { builtinTemplates } from "../../shared/templates/template-registry";
 import { canDeleteTemplate, createUserTemplate, mergeTemplates } from "../../shared/templates/template-store";
 import { FormValues, HostEnvironment, IniImportReport, TemplateDefinition } from "../../shared/types";
-import { loadRecentConfigValue, loadUserTemplatesValue, saveRecentConfigValue, saveUserTemplatesValue } from "../persistence/local-storage";
 import { AdvancedSection } from "../components/AdvancedSection";
 import { ExportActions } from "../components/ExportActions";
 import { CoreSetupSection } from "../components/FormSections/CoreSetupSection";
@@ -18,10 +19,12 @@ import { ImportPanel } from "../components/ImportPanel";
 import { ResultPanel } from "../components/ResultPanel";
 import { SectionCard } from "../components/SectionCard";
 import { TemplateManager } from "../components/TemplateManager";
+import { loadRecentConfigValue, loadUserTemplatesValue, saveRecentConfigValue, saveUserTemplatesValue } from "../persistence/local-storage";
+import { downloadTextFile } from "../utils/download";
 
 const emptyResult: ResultSchema = {
   script: "",
-  explanation: ["Select a method, review the template, and generate a script."],
+  explanation: ["请选择研究方法、确认模板后再生成脚本。"],
   missing: [],
   warnings: [],
 };
@@ -85,6 +88,20 @@ export function GeneratorPage({ host }: GeneratorPageProps) {
     setImportReport(imported.report);
   }
 
+  async function handleExportIni() {
+    const iniContent = serializeFormValuesToIni(values, {
+      configName: `论文脚本配置-${getMethodLabel(values.method)}`,
+    });
+    const defaultFileName = buildOutputFileName("stata-config", "ini");
+
+    if (window.desktopApi) {
+      await window.desktopApi.saveTextFile({ defaultFileName, content: iniContent });
+      return;
+    }
+
+    downloadTextFile(defaultFileName, iniContent);
+  }
+
   function handleGenerate() {
     setResult(generateStataScript(values, selectedTemplate));
   }
@@ -110,27 +127,26 @@ export function GeneratorPage({ host }: GeneratorPageProps) {
   return (
     <div className="page-shell">
       <header className="page-header">
-        <h1>Stata Paper Script Generator</h1>
+        <h1>Stata 论文脚本生成器</h1>
         <p>
-          Minimal scaffold for {host === "desktop" ? "Windows EXE" : "web"} with shared logic, ini import, version template management,
-          and a dedicated advanced section.
+          当前运行于 {getHostLabel(host)}。首版聚焦论文实证场景，提供共享生成逻辑、ini 配置导入导出、模板管理、最近配置恢复和集中展示的高级功能区。
         </p>
       </header>
       <div className="grid-layout">
         <div className="column-stack">
-          <SectionCard title="Core Setup" description="Choose the estimation method, data shape, and template baseline.">
+          <SectionCard title="基础设定" description="选择研究方法、数据结构和脚本模板基线。">
             <CoreSetupSection values={values} onFieldChange={updateField} />
           </SectionCard>
-          <SectionCard title="Variable Mapping" description="Define the working variable names for the script template.">
+          <SectionCard title="变量配置" description="填写脚本生成所需的变量名和核心字段。">
             <VariablesSection values={values} onFieldChange={updateField} />
           </SectionCard>
-          <SectionCard title="Output Choices" description="Control fixed effects, outputs, and high-level estimation options.">
+          <SectionCard title="输出与固定效应" description="配置固定效应、标准误和预期输出内容。">
             <OutputSection values={values} onFieldChange={updateField} />
           </SectionCard>
-          <SectionCard title="Import ini" description="Import a versioned ini config and review the mapped fields and warnings.">
-            <ImportPanel onImportContent={handleImportContent} report={importReport} />
+          <SectionCard title="ini 导入导出" description="导入版本化 ini 配置、查看映射报告，或导出当前表单。">
+            <ImportPanel onImportContent={handleImportContent} onExportIni={handleExportIni} report={importReport} />
           </SectionCard>
-          <SectionCard title="Template Management" description="Use built-in templates or save and delete your own.">
+          <SectionCard title="模板管理" description="使用内置模板，或保存、删除你自己的模板。">
             <TemplateManager
               templates={templates}
               selectedTemplateId={selectedTemplate.id}
@@ -139,15 +155,15 @@ export function GeneratorPage({ host }: GeneratorPageProps) {
               onDeleteTemplate={handleDeleteTemplate}
             />
           </SectionCard>
-          <SectionCard title="Advanced Options" description="Advanced functionality is grouped here instead of split by user mode.">
+          <SectionCard title="高级功能" description="首版不区分新手/高手模式，相关补充项统一放在这里。">
             <AdvancedSection values={values} onFieldChange={updateField} />
           </SectionCard>
         </div>
         <div className="column-stack">
-          <SectionCard title="Generated Result" description="Generate, review, and export the current Stata script.">
+          <SectionCard title="生成结果" description="生成、查看并导出当前 Stata 脚本与说明。">
             <div className="toolbar">
               <button type="button" className="button-primary" onClick={handleGenerate}>
-                Generate script
+                生成脚本
               </button>
             </div>
             <ResultPanel result={result} />

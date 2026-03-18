@@ -1,29 +1,30 @@
-﻿import { ResearchMethodOption } from "../types";
+﻿import { methodLabels } from "../i18n/labels";
+import { ResearchMethodOption } from "../types";
 
 export const researchMethods: ResearchMethodOption[] = [
   {
     id: "descriptive",
-    label: "Descriptive Statistics",
-    description: "Summary statistics and correlations for paper-ready tables.",
+    label: methodLabels.descriptive,
+    description: "生成描述统计与相关性分析的脚本骨架。",
   },
   {
     id: "baseline",
-    label: "Baseline Regression",
-    description: "Cross-sectional or pooled regression with standard controls.",
+    label: methodLabels.baseline,
+    description: "生成常规基准回归脚本，并保留常用控制变量位。",
   },
   {
     id: "panel",
-    label: "Panel Regression",
-    description: "Panel setup with entity and time effects.",
+    label: methodLabels.panel,
+    description: "生成面板设定、个体/时间效应相关脚本骨架。",
   },
   {
     id: "did",
-    label: "Difference in Differences",
-    description: "Treatment and post-period specification for policy evaluation.",
+    label: methodLabels.did,
+    description: "生成政策评估常用的处理组与时点差分脚本。",
   },
   {
     id: "iv",
-    label: "Instrumental Variables",
-    description: "Two-stage estimation with an explicit instrument.",
+    label: methodLabels.iv,
+    description: "生成包含工具变量设定的两阶段回归脚本。",
   },
 ];

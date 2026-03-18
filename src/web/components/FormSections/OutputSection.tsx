@@ -1,4 +1,5 @@
-﻿import { FormValues } from "../../../shared/types";
+﻿import { getFixedEffectLabel, getOutputTargetLabel } from "../../../shared/i18n/labels";
+import { FormValues } from "../../../shared/types";
 
 interface OutputSectionProps {
   values: FormValues;
@@ -16,7 +17,7 @@ export function OutputSection({ values, onFieldChange }: OutputSectionProps) {
   return (
     <div className="form-grid">
       <div className="field full-span">
-        <label>Fixed effects</label>
+        <label>固定效应与标准误</label>
         <div className="tag-row">
           {fixedEffectOptions.map((option) => (
             <button
@@ -25,13 +26,13 @@ export function OutputSection({ values, onFieldChange }: OutputSectionProps) {
               className={`tag ${values.fixedEffects.includes(option) ? "active" : ""}`}
               onClick={() => onFieldChange("fixedEffects", toggleItem(values.fixedEffects, option))}
             >
-              {option}
+              {getFixedEffectLabel(option)}
             </button>
           ))}
         </div>
       </div>
       <div className="field full-span">
-        <label>Output targets</label>
+        <label>输出内容</label>
         <div className="tag-row">
           {outputOptions.map((option) => (
             <button
@@ -40,7 +41,7 @@ export function OutputSection({ values, onFieldChange }: OutputSectionProps) {
               className={`tag ${values.outputTargets.includes(option) ? "active" : ""}`}
               onClick={() => onFieldChange("outputTargets", toggleItem(values.outputTargets, option))}
             >
-              {option}
+              {getOutputTargetLabel(option)}
             </button>
           ))}
         </div>

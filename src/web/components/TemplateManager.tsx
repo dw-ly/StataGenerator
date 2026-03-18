@@ -1,4 +1,5 @@
-﻿import { TemplateDefinition } from "../../shared/types";
+﻿import { getTemplateSourceLabel } from "../../shared/i18n/labels";
+import { TemplateDefinition } from "../../shared/types";
 
 interface TemplateManagerProps {
   templates: TemplateDefinition[];
@@ -22,13 +23,13 @@ export function TemplateManager({
           type="button"
           className="button-secondary"
           onClick={() => {
-            const name = window.prompt("Enter a name for the custom template");
-            if (name) {
-              onSaveTemplate(name);
+            const name = window.prompt("请输入自定义模板名称");
+            if (name?.trim()) {
+              onSaveTemplate(name.trim());
             }
           }}
         >
-          Save custom template
+          保存为自定义模板
         </button>
       </div>
       {templates.map((template) => {
@@ -38,8 +39,9 @@ export function TemplateManager({
             <div>
               <strong>{template.label}</strong>
               <div className="muted">
-                Stata {template.stataVersion} · {template.source}
+                Stata {template.stataVersion} · {getTemplateSourceLabel(template.source)}
               </div>
+              <div className="muted">{template.description}</div>
             </div>
             <div className="toolbar">
               <button
@@ -47,11 +49,11 @@ export function TemplateManager({
                 className={isSelected ? "button-primary" : "button-secondary"}
                 onClick={() => onSelectTemplate(template.id)}
               >
-                {isSelected ? "Selected" : "Use"}
+                {isSelected ? "当前使用中" : "使用此模板"}
               </button>
               {template.source === "user" ? (
                 <button type="button" className="button-danger" onClick={() => onDeleteTemplate(template.id)}>
-                  Delete
+                  删除
                 </button>
               ) : null}
             </div>

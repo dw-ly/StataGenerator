@@ -5,7 +5,7 @@ export function registerSaveFileIpc() {
   ipcMain.handle("ini:open", async () => {
     const result = await dialog.showOpenDialog({
       properties: ["openFile"],
-      filters: [{ name: "INI", extensions: ["ini"] }],
+      filters: [{ name: "INI 配置", extensions: ["ini"] }],
     });
 
     if (result.canceled || result.filePaths.length === 0) {
@@ -20,7 +20,7 @@ export function registerSaveFileIpc() {
   ipcMain.handle("file:save-text", async (_event, payload: { defaultFileName: string; content: string }) => {
     const result = await dialog.showSaveDialog({
       defaultPath: payload.defaultFileName,
-      filters: [{ name: "Text", extensions: ["do", "txt"] }],
+      filters: [{ name: "Stata 脚本与说明", extensions: ["do", "txt", "ini"] }],
     });
 
     if (result.canceled || !result.filePath) {

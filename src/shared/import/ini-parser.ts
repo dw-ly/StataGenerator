@@ -1,5 +1,9 @@
 ﻿import { ParsedIni } from "../types";
 
+function decodeIniValue(value: string) {
+  return value.replace(/\\\\/g, "\\").replace(/\\n/g, "\n").replace(/\\r/g, "\r");
+}
+
 export function parseIni(content: string): ParsedIni {
   const sections: ParsedIni["sections"] = {};
   const sectionOrder: string[] = [];
@@ -28,7 +32,7 @@ export function parseIni(content: string): ParsedIni {
     }
 
     const key = line.slice(0, separatorIndex).trim().toLowerCase();
-    const value = line.slice(separatorIndex + 1).trim();
+    const value = decodeIniValue(line.slice(separatorIndex + 1).trim());
     sections[currentSection][key] = value;
   }
 

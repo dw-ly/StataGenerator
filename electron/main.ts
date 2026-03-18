@@ -6,6 +6,7 @@ import { registerTemplateStoreIpc } from "./ipc/template-store";
 
 function createWindow() {
   const window = new BrowserWindow({
+    title: "Stata 论文脚本生成器",
     width: 1440,
     height: 980,
     webPreferences: {

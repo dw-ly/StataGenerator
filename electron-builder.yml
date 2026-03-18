@@ -1,9 +1,13 @@
 ﻿appId: ai.codex.stata-generator
 productName: Stata Script Generator
+directories:
+  output: release
 files:
   - dist/**/*
   - dist-electron/**/*
   - package.json
 win:
+  signAndEditExecutable: false
+  verifyUpdateCodeSignature: false
   target:
     - nsis
